@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trình tạo ảnh AI với Google</title>
+    <title>Trình tạo ảnh AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -16,7 +16,7 @@
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            border-left-color: #34A853; /* Google Green */
+            border-left-color: #34A853;
             animation: spin 1s ease infinite;
         }
         @keyframes spin {
@@ -30,8 +30,8 @@
     <div class="w-full max-w-2xl bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
         <!-- Header -->
         <div class="text-center mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white">Trình Tạo Ảnh với Google AI</h1>
-            <p class="text-gray-500 dark:text-gray-400 mt-2">Nhập mô tả của bạn để tạo ra một hình ảnh độc đáo bằng mô hình Imagen.</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white">Stable Diffusion Model</h1>
+            <p class="text-gray-500 dark:text-gray-400 mt-2">Nhập mô tả của bạn.</p>
         </div>
 
         <!-- Input Form -->
@@ -52,17 +52,18 @@
              <!-- Error Message -->
             <p id="error-message" class="hidden text-red-500 text-center p-4"></p>
         </div>
+        <div class="text-center mt-4">
+             <p class="text-xs text-gray-400 dark:text-gray-500">Lưu ý: Bạn cần có API Key từ Google AI Studio để ứng dụng hoạt động.</p>
+        </div>
     </div>
 
     <script>
-        // --- Lấy các phần tử trên trang ---
         const promptInput = document.getElementById('prompt-input');
         const generateBtn = document.getElementById('generate-btn');
         const loader = document.getElementById('loader');
         const resultImage = document.getElementById('result-image');
         const errorMessage = document.getElementById('error-message');
 
-        // --- Gắn sự kiện cho nút và ô input ---
         generateBtn.addEventListener('click', generateImage);
         promptInput.addEventListener('keyup', (event) => {
             if (event.key === 'Enter') {
@@ -70,11 +71,11 @@
             }
         });
 
-        async function generateImage() {
-            const apiKey = "AIzaSyAy2tSgI1W2u1qLZeTjyUFlUhXnjrpCae8"; 
 
-            const prompt = promptInput.value.trim();
-            if (!prompt) {
+        async function generateImage() {
+            const apiKey = "AIzaSyDTOtfHMPpr3UCXgsX0YBCNrSqPKpFyFQw"; 
+            const userPrompt = promptInput.value.trim();
+            if (!userPrompt) {
                 showError("Vui lòng nhập mô tả cho ảnh.");
                 return;
             }
@@ -83,15 +84,17 @@
                  return;
             }
 
+            const finalPrompt = `${userPrompt}, in the style of ghibli studio, beautiful anime art, detailed illustration, cinematic lighting`;
+
             showLoading(true);
             
             try {
                 const payload = {
-                    instances: [{ prompt: prompt }],
+                    instances: [{ prompt: finalPrompt }], 
                     parameters: { "sampleCount": 1 }
                 };
 
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=${apiKey}`;
 
                 const response = await fetch(apiUrl, {
                     method: 'POST',
@@ -138,10 +141,6 @@
             }
         }
 
-        /**
-         * Hàm hiển thị thông báo lỗi cho người dùng
-         * @param {string} message - Thông điệp lỗi cần hiển thị
-         */
         function showError(message) {
             resultImage.classList.add('hidden');
             errorMessage.textContent = `Lỗi: ${message}`;
