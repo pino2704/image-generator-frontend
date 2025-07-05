@@ -52,9 +52,6 @@
              <!-- Error Message -->
             <p id="error-message" class="hidden text-red-500 text-center p-4"></p>
         </div>
-        <div class="text-center mt-4">
-             <p class="text-xs text-gray-400 dark:text-gray-500">Lưu ý: Bạn cần có API Key từ Google AI Studio để ứng dụng hoạt động.</p>
-        </div>
     </div>
 
     <script>
@@ -73,9 +70,6 @@
             }
         });
 
-        /**
-         * Hàm chính để tạo ảnh bằng cách gọi API của Google
-         */
         async function generateImage() {
             const apiKey = "AIzaSyAy2tSgI1W2u1qLZeTjyUFlUhXnjrpCae8"; 
 
@@ -97,7 +91,7 @@
                     parameters: { "sampleCount": 1 }
                 };
 
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:predict?key=${apiKey}`;
 
                 const response = await fetch(apiUrl, {
                     method: 'POST',
@@ -119,7 +113,7 @@
                     resultImage.classList.remove('hidden');
                     errorMessage.classList.add('hidden');
                 } else {
-                    throw new Error("Không nhận được dữ liệu hình ảnh hợp lệ từ API.");
+                    throw new Error("Không nhận được dữ liệu hình ảnh hợp lệ từ Model.");
                 }
 
             } catch (error) {
