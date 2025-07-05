@@ -138,17 +138,17 @@
                 };
 
                 const apiKey = ""; 
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+                const apiUrl = `https://pino2704-cv_final.hf.space/generate-image`;
 
                 const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify({ prompt: finalPrompt })
                 });
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData.error?.message || `Lỗi máy chủ: ${response.status}`);
+                    throw new Error(errorData.error?.message || `Server error: ${response.status}`);
                 }
 
                 const result = await response.json();
@@ -161,6 +161,9 @@
                 } else {
                     throw new Error("Không nhận được dữ liệu hình ảnh hợp lệ từ API.");
                 }
+                const imageBlob = await response.blob();
+                const imageUrl = URL.createObjectURL(imageBlob);
+                resultImage.src = imageUrl;
 
             } catch (error) {
                 console.error('Error generating image:', error);
