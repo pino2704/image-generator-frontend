@@ -30,8 +30,8 @@
     <div class="w-full max-w-2xl bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
         <!-- Header -->
         <div class="text-center mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white">Stable Diffusion Model</h1>
-            <p class="text-gray-500 dark:text-gray-400 mt-2">Nhập mô tả của bạn.</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white">Trình Tạo Ảnh với Google AI</h1>
+            <p class="text-gray-500 dark:text-gray-400 mt-2">Nhập mô tả của bạn để tạo ra một hình ảnh độc đáo bằng mô hình Imagen.</p>
         </div>
 
         <!-- Input Form -->
@@ -58,12 +58,14 @@
     </div>
 
     <script>
+        // --- Lấy các phần tử trên trang ---
         const promptInput = document.getElementById('prompt-input');
         const generateBtn = document.getElementById('generate-btn');
         const loader = document.getElementById('loader');
         const resultImage = document.getElementById('result-image');
         const errorMessage = document.getElementById('error-message');
 
+        // --- Gắn sự kiện cho nút và ô input ---
         generateBtn.addEventListener('click', generateImage);
         promptInput.addEventListener('keyup', (event) => {
             if (event.key === 'Enter') {
@@ -71,30 +73,44 @@
             }
         });
 
-
+        /**
+         * Hàm chính để tạo ảnh bằng cách gọi API của Google
+         */
         async function generateImage() {
-            const apiKey = "AIzaSyDTOtfHMPpr3UCXgsX0YBCNrSqPKpFyFQw"; 
+            // --- THAY THẾ API KEY CỦA BẠN VÀO ĐÂY ---
+            // Bạn có thể lấy API Key miễn phí từ Google AI Studio: https://aistudio.google.com/
+            const apiKey = "AIzaSyDTOtfHMPpr3UCXgsX0YBCNrSqPKpFyFQw"; // Môi trường sẽ tự động cung cấp key này.
+
             const userPrompt = promptInput.value.trim();
             if (!userPrompt) {
                 showError("Vui lòng nhập mô tả cho ảnh.");
                 return;
             }
             if (!apiKey) {
-                 showError("Backend ERROR");
+                 showError("Vui lòng cung cấp API Key của Google AI Studio trong file index.html.");
                  return;
             }
 
+            // Thêm các từ khóa về phong cách Ghibli vào prompt
             const finalPrompt = `${userPrompt}, in the style of ghibli studio, beautiful anime art, detailed illustration, cinematic lighting`;
 
+            // Bắt đầu hiển thị trạng thái đang tải
             showLoading(true);
             
+            // --- Gọi API tạo ảnh Imagen của Google ---
             try {
+                // Đây là cấu trúc payload yêu cầu cho mô hình Imagen
                 const payload = {
-                    instances: [{ prompt: finalPrompt }], 
+                    instances: [{ prompt: finalPrompt }], // Sử dụng prompt đã được thêm phong cách
                     parameters: { "sampleCount": 1 }
                 };
 
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=${apiKey}`;
+                // LƯU Ý: Model 'gemini-2.0-flash-preview-image-generation' là một model trong giai đoạn thử nghiệm
+                // và có thể không hoạt động với API key của bạn, gây ra lỗi "not found".
+                // Model được đề xuất và hoạt động ổn định là 'imagen-3.0-generate-002'.
+                const modelName = "gemini-2.0-flash-preview-image-generation"; // Model người dùng yêu cầu
+
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:predict?key=${apiKey}`;
 
                 const response = await fetch(apiUrl, {
                     method: 'POST',
@@ -104,29 +120,37 @@
 
                 if (!response.ok) {
                     const errorData = await response.json();
+                    // Lấy thông điệp lỗi chi tiết từ API
                     const message = errorData.error?.message || `Lỗi máy chủ: ${response.status}`;
                     throw new Error(message);
                 }
 
                 const result = await response.json();
 
+                // Kiểm tra xem API có trả về dữ liệu ảnh hợp lệ không
                 if (result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
+                    // Ghép chuỗi Base64 với tiền tố để tạo thành URL hình ảnh
                     const imageUrl = `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
                     resultImage.src = imageUrl;
                     resultImage.classList.remove('hidden');
                     errorMessage.classList.add('hidden');
                 } else {
-                    throw new Error("Không nhận được dữ liệu hình ảnh hợp lệ từ Model.");
+                    throw new Error("Không nhận được dữ liệu hình ảnh hợp lệ từ API.");
                 }
 
             } catch (error) {
                 console.error('Lỗi khi tạo ảnh:', error);
                 showError(error.message);
             } finally {
+                // Dừng trạng thái đang tải dù thành công hay thất bại
                 showLoading(false);
             }
         }
 
+        /**
+         * Hàm quản lý trạng thái giao diện khi đang tải
+         * @param {boolean} isLoading - True để hiển thị, false để ẩn
+         */
         function showLoading(isLoading) {
             if (isLoading) {
                 generateBtn.disabled = true;
@@ -141,6 +165,10 @@
             }
         }
 
+        /**
+         * Hàm hiển thị thông báo lỗi cho người dùng
+         * @param {string} message - Thông điệp lỗi cần hiển thị
+         */
         function showError(message) {
             resultImage.classList.add('hidden');
             errorMessage.textContent = `Lỗi: ${message}`;
