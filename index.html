@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trình tạo ảnh AI</title>
+    <title>Trình tạo ảnh AI với Google</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -16,23 +16,12 @@
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            border-left-color: #09f;
+            border-left-color: #34A853; /* Google Green */
             animation: spin 1s ease infinite;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
-        /* Styling for custom radio buttons */
-        .peer:checked ~ label {
-            --tw-border-opacity: 1;
-            border-color: rgb(37 99 235 / var(--tw-border-opacity));
-            --tw-text-opacity: 1;
-            color: rgb(37 99 235 / var(--tw-text-opacity));
-        }
-        .dark .peer:checked ~ label {
-             --tw-text-opacity: 1;
-            color: rgb(59 130 246 / var(--tw-text-opacity));
         }
     </style>
 </head>
@@ -41,65 +30,42 @@
     <div class="w-full max-w-2xl bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
         <!-- Header -->
         <div class="text-center mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white">Trình Tạo Ảnh AI</h1>
-            <p class="text-gray-500 dark:text-gray-400 mt-2">Nhập mô tả và chọn phong cách để tạo ra một hình ảnh độc đáo.</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white">Trình Tạo Ảnh với Google AI</h1>
+            <p class="text-gray-500 dark:text-gray-400 mt-2">Nhập mô tả của bạn để tạo ra một hình ảnh độc đáo bằng mô hình Imagen.</p>
         </div>
 
         <!-- Input Form -->
-        <div class="space-y-6 mb-6">
-            <!-- Prompt Input -->
-            <div>
-                <label for="prompt-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">1. Nhập mô tả của bạn</label>
-                <input type="text" id="prompt-input" placeholder="Ví dụ: một hiệp sĩ rồng trong lâu đài trên mây" class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-4" required>
-            </div>
-
-            <!-- Style Options -->
-            <div>
-                <label class="block mb-3 text-sm font-medium text-gray-900 dark:text-white">2. Chọn phong cách</label>
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    <div>
-                        <input type="radio" id="style-normal" name="style" value="normal" class="hidden peer" checked>
-                        <label for="style-normal" class="flex items-center justify-center w-full p-3 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors">                           
-                            Bình thường
-                        </label>
-                    </div>
-                    <div>
-                        <input type="radio" id="style-anime" name="style" value="anime" class="hidden peer">
-                        <label for="style-anime" class="flex items-center justify-center w-full p-3 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors">
-                            Anime
-                        </label>
-                    </div>
-                    <div>
-                        <input type="radio" id="style-fantasy" name="style" value="fantasy" class="hidden peer">
-                        <label for="style-fantasy" class="flex items-center justify-center w-full p-3 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors">
-                            Fantasy
-                        </label>
-                    </div>
-                </div>
-            </div>
+        <div class="flex flex-col sm:flex-row gap-4 mb-6">
+            <input type="text" id="prompt-input" placeholder="Ví dụ: một con rồng bằng pha lê đang bay trên bầu trời đêm" class="flex-grow bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-4" required>
+            <button id="generate-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-3z"/><path d="m9 12 2 2 4-4"/></svg>
+                Tạo ảnh
+            </button>
         </div>
-
-        <!-- Generate Button -->
-        <button id="generate-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg transition-colors duration-300 flex items-center justify-center mb-6 text-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-3z"/><path d="m9 12 2 2 4-4"/></svg>
-            Tạo ảnh
-        </button>
 
         <!-- Image Display Area -->
         <div id="image-container" class="w-full aspect-square bg-gray-100 dark:bg-gray-700 rounded-xl flex items-center justify-center overflow-hidden border border-gray-200 dark:border-gray-600">
+            <!-- Loading Spinner -->
             <div id="loader" class="hidden spinner"></div>
+            <!-- Result Image -->
             <img id="result-image" src="https://placehold.co/1024x1024/e2e8f0/4a5568?text=H%C3%ACnh+%E1%BA%A3nh+c%E1%BB%A7a+b%E1%BA%A1n+s%E1%BA%BD+%C4%91%C6%B0%E1%BB%A3c+hi%E1%BB%83n+th%E1%BB%8B+%E1%BB%9F+%C4%91%C3%A2y" alt="AI generated image" class="w-full h-full object-cover">
+             <!-- Error Message -->
             <p id="error-message" class="hidden text-red-500 text-center p-4"></p>
+        </div>
+        <div class="text-center mt-4">
+             <p class="text-xs text-gray-400 dark:text-gray-500">Lưu ý: Bạn cần có API Key từ Google AI Studio để ứng dụng hoạt động.</p>
         </div>
     </div>
 
     <script>
+        // --- Lấy các phần tử trên trang ---
         const promptInput = document.getElementById('prompt-input');
         const generateBtn = document.getElementById('generate-btn');
         const loader = document.getElementById('loader');
         const resultImage = document.getElementById('result-image');
         const errorMessage = document.getElementById('error-message');
 
+        // --- Gắn sự kiện cho nút và ô input ---
         generateBtn.addEventListener('click', generateImage);
         promptInput.addEventListener('keyup', (event) => {
             if (event.key === 'Enter') {
@@ -108,47 +74,41 @@
         });
 
         /**
-         * Main function to generate an image from the user's prompt and selected style.
+         * Hàm chính để tạo ảnh bằng cách gọi API của Google
          */
         async function generateImage() {
-            const basePrompt = promptInput.value.trim();
-            if (!basePrompt) {
+            const apiKey = "AIzaSyAy2tSgI1W2u1qLZeTjyUFlUhXnjrpCae8"; 
+
+            const prompt = promptInput.value.trim();
+            if (!prompt) {
                 showError("Vui lòng nhập mô tả cho ảnh.");
                 return;
             }
-
-            // --- UI Updates: Start Loading ---
-            showLoading(true);
-
-            // Get selected style and modify the prompt
-            const selectedStyle = document.querySelector('input[name="style"]:checked').value;
-            let finalPrompt = basePrompt;
-
-            if (selectedStyle === 'anime') {
-                finalPrompt = `${basePrompt}, anime style, vibrant colors, detailed illustration, digital art, by makoto shinkai`;
-            } else if (selectedStyle === 'fantasy') {
-                finalPrompt = `${basePrompt}, fantasy style, epic, magical, intricate details, cinematic lighting, digital painting, by greg rutkowski`;
+            if (!apiKey) {
+                 showError("Backend ERROR");
+                 return;
             }
+
+            showLoading(true);
             
-            // --- API Call ---
             try {
                 const payload = {
-                    instances: [{ prompt: finalPrompt }],
+                    instances: [{ prompt: prompt }],
                     parameters: { "sampleCount": 1 }
                 };
 
-                const apiKey = ""; 
-                const apiUrl = `https://pino2704-cv_final.hf.space/generate-image`;
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
 
                 const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: finalPrompt })
+                    body: JSON.stringify(payload)
                 });
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData.error?.message || `Server error: ${response.status}`);
+                    const message = errorData.error?.message || `Lỗi máy chủ: ${response.status}`;
+                    throw new Error(message);
                 }
 
                 const result = await response.json();
@@ -161,23 +121,15 @@
                 } else {
                     throw new Error("Không nhận được dữ liệu hình ảnh hợp lệ từ API.");
                 }
-                const imageBlob = await response.blob();
-                const imageUrl = URL.createObjectURL(imageBlob);
-                resultImage.src = imageUrl;
 
             } catch (error) {
-                console.error('Error generating image:', error);
+                console.error('Lỗi khi tạo ảnh:', error);
                 showError(error.message);
             } finally {
-                // --- UI Updates: Stop Loading ---
                 showLoading(false);
             }
         }
 
-        /**
-         * Shows or hides the loading indicator and manages button state.
-         * @param {boolean} isLoading - True to show loader, false to hide.
-         */
         function showLoading(isLoading) {
             if (isLoading) {
                 generateBtn.disabled = true;
@@ -193,14 +145,15 @@
         }
 
         /**
-         * Displays an error message to the user.
-         * @param {string} message - The error message to display.
+         * Hàm hiển thị thông báo lỗi cho người dùng
+         * @param {string} message - Thông điệp lỗi cần hiển thị
          */
         function showError(message) {
             resultImage.classList.add('hidden');
             errorMessage.textContent = `Lỗi: ${message}`;
             errorMessage.classList.remove('hidden');
         }
+
     </script>
 </body>
 </html>
