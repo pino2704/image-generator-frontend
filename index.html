@@ -110,7 +110,7 @@
                 // Model được đề xuất và hoạt động ổn định là 'imagen-3.0-generate-002'.
                 const modelName = "gemini-2.0-flash-preview-image-generation"; // Model người dùng yêu cầu
 
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:predict?key=${apiKey}`;
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=${apiKey}`;
 
                 const response = await fetch(apiUrl, {
                     method: 'POST',
